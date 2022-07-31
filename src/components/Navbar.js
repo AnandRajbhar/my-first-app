@@ -6,7 +6,7 @@ export default function Navbar() {
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">
-            UdanAir1
+            UdanAir
           </a>
           <button
             className="navbar-toggler"
