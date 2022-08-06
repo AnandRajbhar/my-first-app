@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-export default function About() {
+export default function About(props) {
   const [myStyle, setMyStyle] = useState({
-    color: "white",
+    color: "",
     border: "none",
     //padding: "10p",
-    backgroundColor: "#34238f82",
+    backgroundColor: "rgb(10 153 237 / 48%)",
     // width:"80%",
     // margin:"auto"
   });
@@ -29,12 +29,12 @@ export default function About() {
   };
 
   return (
-    <div CassName="container" style={myStyle}>
+    <div className="container"  style={myStyle}>
       <div className="row justify-content-center">
         <div className="col-10">
-          <hi className="my-3">About us</hi>
+          <h1 className="my-3">About us</h1>
           <div className="accordion" id="accordionExample">
-            <div classname="accordion-item">
+            <div className="accordion-item">
               <h2 className="accordion-header" id="headingOne">
                 <button
                   className="accordion-button"
