@@ -1,48 +1,59 @@
-//import UdanAir from './UdanAir.svg';
-import "./App.css";
+//import "./App.css";
 import Navbar from "./components/Navbar";
 import TextForm from "./components/TextForm";
 import About from "./components/About";
 import React, { useState } from "react";
-//import Alert from './components/Alert'
-// import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Alert from './components/Alert'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+ 
 function App() {
-  const [mode, setMode] = useState("Dark");
+  const [mode, setMode] = useState("danger");
+  const [alert, setAlert] = useState(null);
+ const showAlert = ( message, type) =>{
+   setAlert({
+    msg: message,
+    type: type
+  })
+  setTimeout(()=>{
+    setAlert(null);
+  },2000);
+ }
+  
   const toggleMode = () => {
-    if (mode === "light") {
-      setMode("dark");
+    if (mode === "info") {
+      setMode("danger");
+      document.body.style.backgroundColer="rgb(35 54 70)";
+      showAlert("info Mode has been enable", "success");
+
     } else {
-      setMode("light");
+      setMode("info");
+      document.body.style.backgroundColer="white";
+      showAlert("danger Mode has been enable", "success");
     }
   };
   return (
     <>
-      <div>Hello</div>
       <div className="container">
-        {/* <Router>
-          <Switch>
-          <Route path="/About">
-          <About />
-          </Route>
-          <Route path="/">
-          <TextForm heading="Welcome To UdanAir Reserveration " />
-          </Route>
-          </Switch>
-        </Router> */}
         <BrowserRouter>
-          <Navbar title="UdanAir" mode={mode} toggleMode={toggleMode} />
+          <Navbar title="AirIndia" mode={mode} toggleMode={toggleMode} />
           <Routes>
-            <Route path="/about" element={<About />}></Route>
+            <Route path="/about" element={<About mode={mode}  toggleMode={toggleMode} />}></Route>
             <Route
               path="/"
-              element={<TextForm heading="Welcome To UdanAir Reserveration " />}
+              element={
+                <TextForm
+                  heading="Welcome To Tutorials "
+                  mode={mode}
+                  toggleMode={toggleMode}
+                  shoeAlert={showAlert}
+                />
+              }
             ></Route>
-          </Routes>
-        </BrowserRouter>
+           
+        <Route path="/Alert" element={<Alert alert={alert} mode={mode}/> }></Route> 
+      </Routes>
+      </BrowserRouter>
       </div>
-      {/* <UdanAir/> <Alert/> */}
     </>
   );
 }

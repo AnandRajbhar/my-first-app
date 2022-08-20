@@ -10,13 +10,11 @@ export default function TextForm(props) {
     props.showAlert("Convert to UpperCase", "success");
   };
   const handleLoClick = () => {
-    //console.log("LowerCase was clicked" + text);
     let newText = text.toLowerCase();
     setText(newText);
     props.showAlert("Convert to LowerCase", "success");
   };
   const handleClear = () => {
-    //console.log("LowerCase was clicked" + text);
     let newText = "";
     setText(newText);
     props.showAlert("Clear Text", "success");
@@ -24,9 +22,8 @@ export default function TextForm(props) {
 
   const handleExtraSpace = () => {
     let newText = text.split(/[ ]+/);
-    setText(newText.join(" "))
+    setText(newText.join(" "));
     props.showAlert("Remove Extra Space", "success");
-
   };
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
@@ -34,60 +31,91 @@ export default function TextForm(props) {
   };
 
   const handleOnChange = (event) => {
-    //console.log("On Change");
     setText(event.target.value);
   };
-    
+
   return (
     <>
-     
-      <div className="container" style={{color: props.mode==='dark'? 'white':'black'}}>
+      <div
+        className="container"
+        background-size="100%"
+        style={{
+          color: props.mode === "info" ? "white" : "black",
+          background: props.mode === "info" ? "rgb(35 54 70)" : "white",
+        }}
+      >
         <h1>{props.heading}</h1>
         <div className="mb-3">
-          <textarea 
+          <textarea
             className="form-control"
             value={text}
-            style={{ background: props.mode==='dark'? 'rgb(35 54 70)':'white',color: props.mode==='dark'? 'white':'black'}}
+            style={{
+              background: props.mode === "info" ? "rgb(35 54 70)" : "white",
+              color: props.mode === "info" ? "white" : "black",
+            }}
             onChange={handleOnChange}
             id="mybox"
             rows="6"
           ></textarea>
         </div>
-        <button className="btn btn-primary mx-2" onClick={handleUpClick}>
+        <button
+          disabled={text.length === 0}
+          className="btn btn-primary mx-1 my-1"
+          onClick={handleUpClick}
+        >
           Convert to UpperCase
         </button>
 
-        <button className="btn btn-primary mx-3 " onClick={handleLoClick}>
+        <button
+          disabled={text.length === 0}
+          className="btn btn-primary mx-1 my-1 "
+          onClick={handleLoClick}
+        >
           Convert to LowerCase
         </button>
-        <button className="btn btn-primary mx-3 " onClick={handleClear}>
+        <button
+          disabled={text.length === 0}
+          className="btn btn-primary mx-1 my-1 "
+          onClick={handleClear}
+        >
           Clear Text
         </button>
-        <button className="btn btn-primary mx-3 " onClick={handleExtraSpace}>
+        <button
+          disabled={text.length === 0}
+          className="btn btn-primary mx-1 my-1 "
+          onClick={handleExtraSpace}
+        >
           Remove Extra Space
         </button>
-        <button className="btn btn-primary " onClick={handleCopy}>
+        <button
+          disabled={text.length === 0}
+          className="btn btn-primary mx-1 my-1 "
+          onClick={handleCopy}
+        >
           Copy Text
         </button>
       </div>
 
-      <div className="container mb-3" style={{color: props.mode==='dark'? 'white':'black'}}>
+      <div
+        className="container mb-3"
+        style={{
+          color: props.mode === "info" ? "white" : "black",
+          background: props.mode === "info" ? "rgb(35 54 70)" : "white",
+        }}
+      >
         <h1>Your text summary</h1>
         <p>
-          
-           <spam>{text.trim().split("-").length} words and {text.length} characters</spam> 
-          {/*({  text.trim().split.word('').length } words and {text.length} characters)*/}
+          {
+            text.split(/\s+/).filter((element) => {
+              return element.length !== 0;
+            }).length
+          }{" "}
+          words and {text.length} characters.
         </p>
-        <p >{0.008 * text.split(" ").length} minutes read</p>
+        <p>{0.008 * text.split(" ").length} minutes read</p>
         <h2>Preview</h2>
-        <p>{text.length>0?text:"Enter something to Preview"}</p>
+        <p>{text.length > 0 ? text : "Enter something to Preview"}</p>
       </div>
-    
-      <div className={`form-check form-switch my-1 text-${props.mode==='light'? 'dark':'light'}`}>
-                <input className="form-check-input" onClick={props.toggleMode} type="checkbox" role="switch" id="flexSwitchCheckDefault"/>
-                <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Dark   Mode</label>
-             </div> 
-             {/* {alert("heelo")}  */}
-  </>
+    </>
   );
 }
