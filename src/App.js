@@ -35,7 +35,7 @@ function App() {
     <>
       <div className="container">
         <BrowserRouter>
-          <Navbar title="AirIndia" mode={mode} toggleMode={toggleMode} />
+          <Navbar title="Tutorials" mode={mode} toggleMode={toggleMode} />
           <Routes>
             <Route path="/about" element={<About mode={mode}  toggleMode={toggleMode} />}></Route>
             <Route
@@ -51,6 +51,7 @@ function App() {
             ></Route>
            
         <Route path="/Alert" element={<Alert alert={alert} mode={mode}/> }></Route> 
+        
       </Routes>
       </BrowserRouter>
       </div>
