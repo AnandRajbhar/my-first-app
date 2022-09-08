@@ -1,11 +1,11 @@
-//import "./App.css";
+import "./App.css";
 import Navbar from "./components/Navbar";
 import TextForm from "./components/TextForm";
 import About from "./components/About";
 import React, { useState } from "react";
 import Alert from './components/Alert'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
- 
+
 function App() {
   const [mode, setMode] = useState("danger");
   const [alert, setAlert] = useState(null);
@@ -16,7 +16,7 @@ function App() {
   })
   setTimeout(()=>{
     setAlert(null);
-  },2000);
+  },5000);
  }
   
   const toggleMode = () => {
@@ -33,7 +33,7 @@ function App() {
   };
   return (
     <>
-      <div className="container">
+      <div >
         <BrowserRouter>
           <Navbar title="Tutorials" mode={mode} toggleMode={toggleMode} />
           <Routes>
@@ -45,7 +45,8 @@ function App() {
                   heading="Welcome To Tutorials "
                   mode={mode}
                   toggleMode={toggleMode}
-                  shoeAlert={showAlert}
+                  showAlert={showAlert}
+                  alert={alert}
                 />
               }
             ></Route>

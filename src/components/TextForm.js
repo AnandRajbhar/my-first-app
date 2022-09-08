@@ -1,57 +1,51 @@
-import React, { useState , useEffect} from "react";
-import {
-  Form,
-  TextArea,
-  Button,
-  Icon
-} from 'semantic-ui-react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Form, TextArea, Button, Icon } from "semantic-ui-react";
+import axios from "axios";
+import Alert from "./Alert";
 
 export default function TextForm(props) {
+  const [inputText, setInputText] = useState("");
+  const [detectLanguageKey, setdetectedLanguageKey] = useState("");
+  const [selectedLanguageKey, setLanguageKey] = useState("");
+  const [languagesList, setLanguagesList] = useState([]);
+  const [resultText, setResultText] = useState("");
+  const getLanguageSource = () => {
+    axios
+      .post(`https://libretranslate.de/detect`, {
+        q: inputText,
+      })
+      .then((response) => {
+        setdetectedLanguageKey(response.data[0].language);
+      });
+  };
+  useEffect(() => {
+    axios.get(`https://libretranslate.de/languages`).then((response) => {
+      setLanguagesList(response.data);
+    });
+  }, []);
 
-  const [inputText, setInputText] = useState('');
-    const [detectLanguageKey, setdetectedLanguageKey] = useState('');
-    const [selectedLanguageKey, setLanguageKey] = useState('')
-    const [languagesList, setLanguagesList] = useState([])
-    const [resultText, setResultText] = useState('');
-    const getLanguageSource = () => {
-        axios.post(`https://libretranslate.de/detect`, {
-            q: inputText
-        })
-            .then((response) => {
-                setdetectedLanguageKey(response.data[0].language)
-            })
-    }
-    useEffect(() => {
-        axios.get(`https://libretranslate.de/languages`)
-            .then((response) => {
-                setLanguagesList(response.data)
-            })
-    }, [])
+  const languageKey = (selectedLanguage) => {
+    setLanguageKey(selectedLanguage.target.value);
+  };
 
-    const languageKey = (selectedLanguage) => {
-        setLanguageKey(selectedLanguage.target.value)
-    }
+  const translateText = () => {
+    getLanguageSource();
 
-    const translateText = () => {
-        getLanguageSource();
-
-        let data = {
-            q : inputText,
-            source: detectLanguageKey,
-            target: selectedLanguageKey
-        }
-        axios.post(`https://libretranslate.de/translate`, data)
-        .then((response) => {
-            setResultText(response.data.translatedText)
-        })
-    }
+    let data = {
+      q: inputText,
+      source: detectLanguageKey,
+      target: selectedLanguageKey,
+    };
+    axios.post(`https://libretranslate.de/translate`, data).then((response) => {
+      setResultText(response.data.translatedText);
+    });
+  };
   const [text, setText] = useState("");
 
   const handleUpClick = () => {
     //console.log("UpperCase was clicked" + text);
-    let newText = text.toUpperCase();
-    setText(newText);
+    let newText = inputText.toUpperCase();
+    setInputText(newText);
     props.showAlert("Convert to UpperCase", "success");
   };
   const handleLoClick = () => {
@@ -78,9 +72,10 @@ export default function TextForm(props) {
   const handleOnChange = (event) => {
     setText(event.target.value);
   };
-
+  const { alert } = props;
   return (
     <>
+      <Alert alert={alert} mode={props.mode} />
       <div
         className="container"
         background-size="100%"
@@ -89,65 +84,78 @@ export default function TextForm(props) {
           background: props.mode === "info" ? "rgb(35 54 70)" : "white",
         }}
       >
-        <h1>{props.heading}</h1>
+        <h1 className="myheading">{props.heading}</h1>
         <div className="mb-3">
           <Form>
-          <div className="text-center" >
-          <div className="my-2">
-          <Form.Field                   
-            control={TextArea}
-            placeholder='Type Text to Translate..'
-           onChange={(e) => setInputText(e.target.value)}
-            style={{
-              background: props.mode === "info" ? "rgb(35 54 70)" : "white",
-              color: props.mode === "info" ? "white" : "black",
-              width:"100%", height:"auto"
-            }}
-            // onChange={handleOnChange}
-            id="mybox"
-            rows="6"
-          ></Form.Field></div>
+            <div className="text-center">
+              <div className="my-2">
+                {/* <Form.Field
+                  control={TextArea}
+                  placeholder="Type Text to Translate.."
+                  onChange={(e) => setInputText(e.target.value)}
+                  style={{
+                    background:
+                      props.mode === "info" ? "rgb(35 54 70)" : "white",
+                    color: props.mode === "info" ? "white" : "black",
+                    width: "100%",
+                    height: "auto",
+                  }}
+                  // onChange={handleOnChange}
+                  id="mybox"
+                  rows="6"
+                /> */}
+                <textarea
+                  rows="6"
+                  cols="50"
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder="Enter Text"
+                  style={{
+                    background:
+                      props.mode === "info" ? "rgb(35 54 70)" : "white",
+                    color: props.mode === "info" ? "white" : "black",
+                    width: "100%",
+                    height: "auto",
+                  }}
+                  value={inputText}
+                />
+              </div>
 
-<div className="my-2">
-          <select className="language-select" onChange={languageKey}>
-                            <option>Please Select Language..</option>
-                            {languagesList.map((language) => {
-                                return (
-                                    <option value={language.code}>
-                                        {language.name}
-                                    </option>
-                                )
-                            })}
-                            
-                        </select>
-</div>
-<div className="my-2">
-          <Form.Field
-            control={TextArea}
-            placeholder='Your Result Translation..'
-            value={resultText}
-            style={{
-              background: props.mode === "info" ? "rgb(35 54 70)" : "white",
-              color: props.mode === "info" ? "white" : "black",
-              width:"100%", height:"auto"
-            }}
-            onChange={handleOnChange}
-            id="mybox"
-            rows="6"
-          ></Form.Field>
-</div>
-           <Button
-                            color="orange"
-                            size="large"
-                            onClick={translateText}
-                        >
-                            <Icon name='translate' />
-                            Translate</Button>
-</div>
+              <div className="my-2">
+                <select className="language-select" onChange={languageKey}>
+                  <option>Please Select Language..</option>
+                  {languagesList.map((language) => {
+                    return (
+                      <option value={language.code}>{language.name}</option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div className="my-2">
+                <Form.Field
+                  control={TextArea}
+                  placeholder="Your Result Translation.."
+                  value={resultText}
+                  style={{
+                    background:
+                      props.mode === "info" ? "rgb(35 54 70)" : "white",
+                    color: props.mode === "info" ? "white" : "black",
+                    width: "100%",
+                    height: "auto",
+                  }}
+                  onChange={handleOnChange}
+                  id="mybox"
+                  rows="6"
+                ></Form.Field>
+              </div>
+              <Button color="orange" size="large" onClick={translateText}>
+                <Icon name="translate" />
+                Translate
+              </Button>
+            </div>
           </Form>
         </div>
         <button
-          disabled={text.length === 0}
+          disabled={inputText.length === 0}
           className="btn btn-primary mx-1 my-1"
           onClick={handleUpClick}
         >
@@ -155,28 +163,28 @@ export default function TextForm(props) {
         </button>
 
         <button
-          disabled={text.length === 0}
+          disabled={inputText.length === 0}
           className="btn btn-primary mx-1 my-1 "
           onClick={handleLoClick}
         >
           Convert to LowerCase
         </button>
         <button
-          disabled={text.length === 0}
+          disabled={inputText.length === 0}
           className="btn btn-primary mx-1 my-1 "
           onClick={handleClear}
         >
           Clear Text
         </button>
         <button
-          disabled={text.length === 0}
+          disabled={inputText.length === 0}
           className="btn btn-primary mx-1 my-1 "
           onClick={handleExtraSpace}
         >
           Remove Extra Space
         </button>
         <button
-          disabled={text.length === 0}
+          disabled={inputText.length === 0}
           className="btn btn-primary mx-1 my-1 "
           onClick={handleCopy}
         >
